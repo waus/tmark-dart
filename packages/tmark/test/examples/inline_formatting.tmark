@@ -1,0 +1,9 @@
+{document;
+#url{https://tmark.waus.app/examples/inline_formatting.tmark}
+#title{Inline formatting}
+{h;#s{2}Combine inline styles}
+{p;Nested: {b;{i;{u;bold, italic, and underlined}}}; hidden: {spoiler;spoiler}; chemistry: H{sub;2}O; power: x{sup;2}.}
+{p;{a;#href{https://example.com/docs}External link} and {anchor-link;#name{formatting-notes}link to the note below} can be mixed with {code;code} and {math;a^2+b^2=c^2}.}
+{anchor;formatting-notes}
+{p;This note is the target of the anchor link above.}
+}

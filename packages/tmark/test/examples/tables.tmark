@@ -1,0 +1,22 @@
+{document;
+#url{https://tmark.waus.app/examples/tables.tmark}
+#title{Tables}
+{h;#s{2}Sales by quarter}
+{table;
+#caption{Quarterly revenue (striped rows)}
+#striped{t}
+{{#header{t}Quarter}{#header{t}#align{right}Revenue}{#header{t}Status}}
+{{Q1}{#align{right}$12,400}{closed}}
+{{Q2}{#align{right}$11,400}{closed}}
+{{Q3}{#align{right}$22,000}{closed}}
+{{Q4}{#align{right}$15,100}{forecast}}
+}
+{table;
+#caption{Merged cells and text alignment}
+#bordered{t}
+{{#header{t}#colspan{3}Merged header}}
+{{#valign{top}Left}{#align{center}Center}{#align{right}Right}}
+{{#rowspan{2}Tall}{A}{B}}
+{{C}{D}}
+}
+}

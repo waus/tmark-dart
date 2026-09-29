@@ -1,0 +1,8 @@
+{document;
+#url{https://tmark.waus.app/examples/maps_and_events.tmark}
+#title{Maps and events}
+{h;#s{2}Apollo 11 launch}
+{p;Apollo 11 launched on {datetime;#timezone{America/New_York}-14552880} from Launch Pad 39A at Kennedy Space Center, Florida (9:32 a.m. EDT).}
+{map;#lat{28.608402}#lon{-80.604201}#zoom{14}#caption{Apollo 11 launch site: Pad 39A}}
+{map;#lat{-33.86882}#lon{151.20929}#caption{{b;Sydney} without explicit zoom}}
+}

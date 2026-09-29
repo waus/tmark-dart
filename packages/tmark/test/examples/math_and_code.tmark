@@ -1,0 +1,24 @@
+{document;
+#url{https://tmark.waus.app/examples/math_and_code.tmark}
+#title{Math and code}
+{h;#s{2}Formulas and source code}
+{p;An inline formula: {math;\\sqrt\{a^2+b^2\}}. Inline code: {code;const ok = true}.}
+{math-block;
+\\sum_\{i=1\}^\{n\} i = \\frac\{n(n+1)\}\{2\}
+}
+{pre;
+#language{go}
+type Example struct \{
+	Name string `json:"name"`
+\}
+
+func (e Example) Empty() bool \{
+	return e.Name == ""
+\}
+}
+{pre;
+line with \#hash
+line with \{braces\}
+line with backslash \\\\
+}
+}

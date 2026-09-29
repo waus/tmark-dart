@@ -1,0 +1,19 @@
+{document;
+#url{https://tmark.waus.app/examples/quotes_and_details.tmark}
+#title{Quotes and details}
+{h;#s{2}Quoted content}
+{q;
+#credit{Example source}
+{p;A blockquote can contain several blocks.}
+{list;
+{{p;A list item inside the quote}}
+}
+}
+{as;#credit{Editor}A pull quote draws attention to one short thought.}
+{details;
+#summary{{b;Collapsed section}}
+{p;This paragraph is hidden until you expand the section.}
+{img;https://tmark.waus.app/static/mountains-valley.webp}
+}
+{details;#summary{Open section}#open{t}{p;This paragraph is visible by default.}}
+}

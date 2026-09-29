@@ -1,0 +1,3 @@
+dependency_overrides:
+  tmark:
+    path: ../tmark

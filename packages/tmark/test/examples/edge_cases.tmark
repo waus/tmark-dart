@@ -1,0 +1,127 @@
+{document;
+#url{https://tmark.waus.app/examples/edge_cases.tmark}
+#title{Other edge cases}
+{h;#s{4}Reserved characters}
+{p;Reserved characters: \# \{ \} \\ should be escaped.}
+{h;#s{4}Semicolon and line break}
+{p;A semicolon (;) stays literal; line breaks
+stay in the text.}
+{h;#s{4}Special characters in a URL}
+{p;{a;#href{https://example.com/search?q=\{tmark\}\#top}URL with braces and hash}}
+{h;#s{4}Raw markup in a code block}
+{pre;
+#language{tmark}
+\{document;
+\#url\{u\}
+\#title\{t\}
+\{p;raw-ish \# text\}
+\}
+}
+{h;#s{4}Combined formatting}
+{p;{b;{i;This text is bold and italic.}}}
+{p;{s;{b;This text is struck through and bold.}}}
+{p;{s;{m;{i;This text is struck through, highlighted, and italic.}}}}
+{p;{u;{b;This text is underlined and bold.}}}
+{p;{m;{u;This text is highlighted and underlined.}}}
+{p;{b;{i;{u;This text is bold, italic, and underlined.}}}}
+{p;{spoiler;{b;This spoiler contains bold text.}}}
+{p;{a;#href{https://example.com}{i;{u;This link is italic and underlined.}}}}
+{p;A sentence with {b;{m;bold highlighting}} and {i;{s;italic strikethrough}}.}
+{p;Bold inline code: {b;{code;const value = 1}}}
+{h;#s{4}Long unbroken text}
+{p;long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-long-word-{code;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}}
+{h;#s{4}Unknown block}
+{p;Paragraph before an unknown block.}
+{colorpicker;#from{ad34f1}#to{000000}My palette}
+{p;Paragraph after an unknown block.}
+{h;#s{4}Small image}
+{img;#caption{C language logo}https://tmark.waus.app/static/c-logo.png}
+{h;#s{4}Twelve nested details}
+{details;
+#summary{Level 1}
+{p;Detail content 1}
+{details;
+#summary{Level 2}
+{p;Detail content 2}
+{details;
+#summary{Level 3}
+{p;Detail content 3}
+{details;
+#summary{Level 4}
+{p;Detail content 4}
+{details;
+#summary{Level 5}
+{p;Detail content 5}
+{details;
+#summary{Level 6}
+{p;Detail content 6}
+{details;
+#summary{Level 7}
+{p;Detail content 7}
+{details;
+#summary{Level 8}
+{p;Detail content 8}
+{details;
+#summary{Level 9}
+{p;Detail content 9}
+{details;
+#summary{Level 10}
+{p;Detail content 10}
+{details;
+#summary{Level 11}
+{p;Detail content 11}
+{details;
+#summary{Level 12}
+{p;Detail content 12}
+{p;This paragraph is inside twelve nested details.}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+{h;#s{4}Twelve nested blockquotes}
+{q;
+{p;Level 1}
+{q;
+{p;Level 2}
+{q;
+{p;Level 3}
+{q;
+{p;Level 4}
+{q;
+{p;Level 5}
+{q;
+{p;Level 6}
+{q;
+{p;Level 7}
+{q;
+{p;Level 8}
+{q;
+{p;Level 9}
+{q;
+{p;Level 10}
+{q;
+{p;Level 11}
+{q;
+{p;Level 12}
+{p;This paragraph is inside twelve nested blockquotes.}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}

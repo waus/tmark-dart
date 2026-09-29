@@ -1,0 +1,10 @@
+.dart_tool/
+build/
+coverage/
+pubspec.lock
+pubspec_overrides.yaml
+tool/
+example/build/
+example/.dart_tool/
+example/macos/Flutter/ephemeral/
+example/macos/Pods/

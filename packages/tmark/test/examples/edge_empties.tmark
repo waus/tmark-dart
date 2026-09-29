@@ -1,0 +1,40 @@
+{document;
+#url{https://tmark.waus.app/examples/edge_empties.tmark}
+#title{Empty elements}
+{h;#s{4}Empty paragraph}
+{p;}
+{h;#s{4}Empty list}
+{list;
+}
+{h;#s{4}Empty list item}
+{list;
+{}
+}
+{h;#s{4}Empty table}
+{table;
+}
+{h;#s{4}Empty table row}
+{table;
+{}
+}
+{h;#s{4}Empty blockquote}
+{q;}
+{h;#s{4}Empty pull quote}
+{as;}
+{h;#s{4}Empty details}
+{details;#summary{Empty details}#open{t}}
+{h;#s{4}Empty collage}
+{collage;
+}
+{h;#s{4}Empty slideshow}
+{slideshow;
+}
+{h;#s{4}Empty code block}
+{pre;
+}
+{h;#s{4}Empty math block}
+{math-block;
+}
+{h;#s{4}Contentless divider}
+{hr;}
+}

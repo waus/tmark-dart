@@ -1,0 +1,67 @@
+# macOS and Windows
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# IDE state and editor temporary files
+.idea/
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+*~
+.history/
+.vscode/.ropeproject/
+
+# Dart / Flutter caches and generated build output
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+coverage/
+doc/api/
+.flutter-devtools/
+
+# Debug symbols and obfuscation maps
+app.*.symbols
+app.*.map.json
+
+# Native toolchain caches and user state
+.gradle/
+.cxx/
+.externalNativeBuild/
+Pods/
+.symlinks/
+.swiftpm/
+.build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+**/Flutter/ephemeral/
+**/ios/Flutter/.last_build_id
+**/android/local.properties
+**/android/key.properties
+
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+!.env.template
+*.jks
+*.keystore
+
+# Logs
+*.log
+
+# Library lockfiles; the example application's lockfile is committed.
+/packages/tmark/pubspec.lock
+/packages/tmark_generator/pubspec.lock
+/packages/tmark_flutter/pubspec.lock
+
+# Keep generated source (*.g.dart), pubspec_overrides.yaml, .metadata,
+# shared VS Code configuration, and native project files in version control.

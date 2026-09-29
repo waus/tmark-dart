@@ -1,0 +1,36 @@
+{document;
+#url{https://tmark.waus.app/examples/lists_and_tasks.tmark}
+#title{Lists and tasks}
+{h;#s{2}Bullets and nested lists}
+{list;
+{{p;A plain bullet}}
+{
+{p;A bullet with a nested list}
+{list;
+{{p;First nested bullet}}
+{{p;Second nested bullet}}
+}
+}
+}
+{h;#s{3}Numbered and lettered items}
+{list;
+{#order{10}{p;Starts at ten}}
+{#order{11}{p;Continues at eleven}}
+}
+{list;
+{#type{a}#order{1}{p;Lowercase letters}}
+{#type{a}#order{2}{p;The next lowercase letter}}
+{#type{A}#order{3}{p;Uppercase letters}}
+{#type{A}#order{27}{p;Letters continue past Z}}
+}
+{list;
+{#type{i}#order{4}{p;Lowercase Roman numerals}}
+{#type{I}#order{9}{p;Uppercase Roman numerals}}
+{#type{1}#order{12}{p;Explicit decimal numbering}}
+}
+{h;#s{3}Tasks}
+{list;
+{#type{checkbox}#checked{f}{p;An unfinished task}}
+{#type{checkbox}#checked{t}{p;A finished task}}
+}
+}

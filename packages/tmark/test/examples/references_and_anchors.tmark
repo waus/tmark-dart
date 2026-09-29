@@ -1,0 +1,20 @@
+{document;
+#url{https://tmark.waus.app/examples/references_and_anchors.tmark}
+#title{References and anchors}
+{h;#s{2}Links, references, and anchors}
+{p;Lets start with simple external link. It should opens a browser: {a;#href{https://example.com/spec}External spec}}
+{anchor;intro}
+{p;For example we have some long text:
+Bitcoin (abbreviation: BTC; sign: ₿) is the first decentralized cryptocurrency. 
+Based on a free-market ideology, bitcoin was invented in 2008 when an unknown person published a white paper under the pseudonym of Satoshi Nakamoto. Use of bitcoin as a currency began in 2009{ref-link;#name{first-usage}[1]} with the release of its open-source implementation. 
+From 2021 to 2025, El Salvador adopted it as legal tender currency.{ref-link;#name{el-salvador}[2]} As bitcoin is pseudonymous, its use by criminals has attracted the attention of regulators, leading to its ban by several countries.}
+{img;#caption{Bitcoin origins and peer-to-peer adoption}https://tmark.waus.app/static/bit1.png}
+{p;Bitcoin works through the collaboration of computers, each of which acts as a node in the peer-to-peer bitcoin network. Each node maintains an independent copy of a public distributed ledger of transactions, called a blockchain, without central oversight. Transactions are validated through the use of cryptography, preventing one person from spending another person's bitcoin, as long as the owner of the bitcoin keeps certain sensitive data secret. {ref-link;#name{mastering-bitcoin}[3]}}
+{img;#caption{Blockchain nodes validating transactions}https://tmark.waus.app/static/bit2.png}
+{p;Consensus between nodes about the content of the blockchain is achieved using a computationally intensive process based on proof of work, called mining, which is performed by purpose-built computers.}
+{hr;}
+{h;#s{4}References}
+{p;{ref;#name{first-usage}[1] }Davis, Joshua (10 October 2011). "The Crypto-Currency: Bitcoin and its mysterious inventor". {a;#href{https://web.archive.org/web/20141101014157/http://www.newyorker.com/magazine/2011/10/10/the-crypto-currency}The New Yorker.}{i; Archived from the original on 1 November 2014.}}
+{p;{ref;#name{el-salvador}[2] }"El Salvador's dangerous gamble on bitcoin". {a;#href{https://web.archive.org/web/20141101014157/http://www.newyorker.com/magazine/2011/10/10/the-crypto-currency}Financial Times.}{i; Archived from the original on 7 September 2021.}}
+{p;{ref;#name{mastering-bitcoin}[3] }Mastering Bitcoin: Unlocking Digital Crypto-Currencies {a;#href{https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/}O'Reilly Media.}}
+}

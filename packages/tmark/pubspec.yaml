@@ -1,0 +1,11 @@
+name: tmark
+description: Typed tmark model and text serialization codec for Dart.
+version: 0.1.0
+repository: https://github.com/waus/tmark-dart/tree/main/packages/tmark
+issue_tracker: https://github.com/waus/tmark-dart/issues
+environment:
+  sdk: ^3.10.0
+dev_dependencies:
+  test: ^1.25.0
+  analyzer: ^12.1.0
+  source_gen: ^4.2.2

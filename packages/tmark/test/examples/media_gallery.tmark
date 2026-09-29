@@ -1,0 +1,21 @@
+{document;
+#url{https://tmark.waus.app/examples/media_gallery.tmark}
+#title{Media gallery}
+{h;#s{2}Images}
+{img;#caption{Rocky Mountains}https://tmark.waus.app/static/mountains-rockies.webp}
+{img;#caption{Hidden mountain panorama}#has_spoiler{t}https://tmark.waus.app/static/mountains-wide.webp}
+{collage;
+#caption{Image collage}
+{img;https://tmark.waus.app/static/mountains-summit.webp}
+{img;https://tmark.waus.app/static/mountains-teton.webp}
+{img;https://tmark.waus.app/static/mountains-portrait.webp}
+{img;https://tmark.waus.app/static/mountains-lake.webp}
+}
+{slideshow;
+#caption{Image and video slideshow}
+{img;https://tmark.waus.app/static/mountains-hero.webp}
+{video;#has_spoiler{t}https://tmark.waus.app/static/Big_Buck_Bunny_720_10s_1MB.mp4}
+{img;https://tmark.waus.app/static/mountains-valley.webp}
+}
+{audio;#caption{Ambient mountain audio}https://tmark.waus.app/static/mountain-ambient.mp3}
+}

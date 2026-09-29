@@ -1,0 +1,2 @@
+# Library dependencies are resolved by the consuming application.
+/pubspec.lock
