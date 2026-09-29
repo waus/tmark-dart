@@ -4,6 +4,7 @@ coverage/
 pubspec.lock
 pubspec_overrides.yaml
 tool/
+test/
 example/build/
 example/.dart_tool/
 example/macos/Flutter/ephemeral/

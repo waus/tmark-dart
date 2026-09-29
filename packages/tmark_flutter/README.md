@@ -83,6 +83,9 @@ model registration. Nodes without matching renderers fall back to raw tmark;
 
 ## Example
 
+The example app is in the [source repository](https://github.com/waus/tmark-dart/tree/main/packages/tmark_flutter/example).
+From that directory, run:
+
 ```sh
 cd example
 flutter pub get
@@ -96,4 +99,3 @@ flutter pub get
 flutter analyze
 flutter test
 ```
-
