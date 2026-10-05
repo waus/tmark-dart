@@ -6,6 +6,7 @@ Parse, serialize, and render [tmark](https://tmark.waus.app/) documents.
 | --- | --- |
 | [tmark](packages/tmark) | Pure Dart models, parser, serializer, and extensible schemas |
 | [tmark_flutter](packages/tmark_flutter) | Flutter widgets, styles, and custom renderers |
+| [tmark_flutter_extra](packages/tmark_flutter_extra) | Optional audio, video, math, and syntax widgets |
 
 ## Quick start
 
@@ -29,4 +30,3 @@ cd packages/tmark_flutter/example
 flutter pub get
 flutter run
 ```
-
