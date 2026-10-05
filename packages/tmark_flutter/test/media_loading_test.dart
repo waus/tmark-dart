@@ -1,92 +1,132 @@
-import 'dart:typed_data';
+import 'dart:convert';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:tmark/tmark.dart' as tm;
 import 'package:tmark_flutter/tmark_flutter.dart';
 
-Widget _host(Widget child) => Directionality(
-  textDirection: TextDirection.ltr,
-  child: DefaultTextStyle(style: const TextStyle(), child: child),
+Widget _host(Widget child) => MaterialApp(
+  home: Scaffold(body: SingleChildScrollView(child: child)),
+);
+
+final _pixel = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJ'
+  'AAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==',
 );
 
 void main() {
-  testWidgets('rejects audio before calling the presentation callback', (
+  testWidgets('audio is unsupported without fetching its source', (
     tester,
   ) async {
-    var called = false;
+    var loads = 0;
     await tester.pumpWidget(
       _host(
         TmarkView(
           value: const tm.AudioNode(src: 'app:audio'),
-          loadContent: (_) async => Uint8List.fromList([1, 2, 3]),
-          actions: TmarkActions(
-            getContent: (tag, src, bytes) {
-              called = true;
-              return const TmarkContentError('Should not render');
-            },
-          ),
+          getContent: (_) {
+            loads++;
+            return Future.value(_pixel);
+          },
         ),
       ),
     );
     await tester.pumpAndSettle();
-    expect(called, isFalse);
-    expect(find.textContaining('Unsupported audio format'), findsOneWidget);
+    expect(loads, 0);
+    expect(find.textContaining('Audio is not supported'), findsOneWidget);
   });
 
-  testWidgets('passes checked audio bytes to the presentation callback', (
-    tester,
-  ) async {
-    final bytes = Uint8List.fromList([0x66, 0x4c, 0x61, 0x43]);
-    Uint8List? received;
+  testWidgets('reuses downloaded bytes for the same image URL', (tester) async {
+    var loads = 0;
     await tester.pumpWidget(
       _host(
         TmarkView(
-          value: const tm.AudioNode(src: 'app:audio'),
-          loadContent: (_) async => bytes,
-          actions: TmarkActions(
-            getContent: (tag, src, content) {
-              expect(tag, 'audio');
-              expect(src, 'app:audio');
-              received = content;
-              return const TmarkContentError('Ready');
-            },
+          value: const tm.Document(
+            title: 'Images',
+            content: [
+              tm.ImageNode(src: 'app:image'),
+              tm.ImageNode(src: 'app:image'),
+            ],
           ),
+          getContent: (_) async {
+            loads++;
+            return _pixel;
+          },
         ),
       ),
     );
     await tester.pumpAndSettle();
-    expect(received, same(bytes));
-    expect(find.textContaining('Ready'), findsOneWidget);
+    expect(loads, 1);
   });
 
   testWidgets(
-    'inline images use the view loader and reject unsupported bytes',
+    'video preview loads without fetching the video, including loop',
     (tester) async {
-      final requested = <String>[];
+      var loads = 0;
       await tester.pumpWidget(
         _host(
           TmarkView(
-            value: const tm.Paragraph([
-              tm.Icon(src: 'app:icon', alternativeText: 'Icon'),
-            ]),
-            loadContent: (src) async {
-              requested.add(src);
-              return Uint8List.fromList([1, 2, 3]);
+            value: const tm.VideoNode(
+              src: 'https://example.com/video.mp4',
+              preview: 'app:cover',
+              loop: true,
+            ),
+            getContent: (src) {
+              loads++;
+              expect(src, 'app:cover');
+              return Future.value(_pixel);
             },
           ),
         ),
       );
       await tester.pumpAndSettle();
-      expect(requested, ['app:icon']);
-      expect(find.text('Icon'), findsOneWidget);
+      expect(loads, 1);
+      expect(find.bySemanticsLabel('Open video'), findsOneWidget);
     },
   );
+
+  testWidgets('video in a gallery accepts an application renderer', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _host(
+        TmarkView(
+          value: const tm.Slideshow([
+            tm.VideoNode(src: 'https://example.com/video.mp4'),
+          ]),
+          renderers: TmarkRenderers(
+            blocks: [
+              TmarkBlockRenderer<tm.VideoNode>(
+                (context, node, defaults) => const Text('App video'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    expect(find.text('App video'), findsOneWidget);
+  });
 
   test('default loader accepts only HTTP URLs', () async {
     await expectLater(
       defaultTmarkContentLoader('app:icon'),
-      throwsUnsupportedError,
+      throwsA(isA<UnsupportedError>()),
     );
+  });
+
+  test('default HTTP loader returns bytes', () async {
+    final client = MockClient((request) async {
+      expect(request.url.toString(), 'https://example.com/image.png');
+      return http.Response.bytes([1, 2, 3, 4], 200);
+    });
+    addTearDown(client.close);
+
+    final bytes = await defaultTmarkContentLoader(
+      'https://example.com/image.png',
+      client: client,
+    );
+
+    expect(bytes, [1, 2, 3, 4]);
   });
 }

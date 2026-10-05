@@ -1,0 +1,24 @@
+name: tmark_flutter_example
+description: Example viewer for remote tmark documents.
+publish_to: none
+version: 0.1.0
+environment:
+  sdk: ^3.10.0
+dependencies:
+  flutter:
+    sdk: flutter
+  tmark:
+    path: ../../tmark
+  tmark_flutter:
+    path: ..
+  tmark_flutter_extra:
+    path: ../../tmark_flutter_extra
+  http: ^1.6.0
+  just_audio: ^0.10.5
+  video_player: ^2.11.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+flutter:
+  uses-material-design: true

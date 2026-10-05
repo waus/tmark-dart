@@ -25,6 +25,7 @@ part 'src/list_table_view.dart';
 part 'src/map/leaflet_map.dart';
 part 'src/map/projection.dart';
 part 'src/media_support_view.dart';
+part 'src/video_media_view.dart';
 part 'src/styles.dart';
 
 class TmarkView extends StatefulWidget {
@@ -36,7 +37,7 @@ class TmarkView extends StatefulWidget {
     this.renderers = const TmarkRenderers(),
     this.spacing = 12,
     this.codec = const tm.TmarkCodec(),
-    this.loadContent = defaultTmarkContentLoader,
+    this.getContent = defaultTmarkContentLoader,
   });
 
   final tm.TmarkValue value;
@@ -45,7 +46,7 @@ class TmarkView extends StatefulWidget {
   final TmarkRenderers renderers;
   final double spacing;
   final tm.TmarkCodec codec;
-  final TmarkContentLoader loadContent;
+  final TmarkContentLoader getContent;
 
   @override
   State<TmarkView> createState() => _TmarkViewState();
@@ -53,18 +54,18 @@ class TmarkView extends StatefulWidget {
 
 class _TmarkViewState extends State<TmarkView> {
   final _loadedContent = <String, Future<Uint8List>>{};
-  late TmarkContentLoader _cachedLoader = (src) => _loadContent(src);
+  late TmarkContentLoader _cachedLoader = _loadContent;
 
   Future<Uint8List> _loadContent(String src) =>
-      _loadedContent.putIfAbsent(src, () => widget.loadContent(src));
+      _loadedContent.putIfAbsent(src, () => widget.getContent(src));
 
   @override
   void didUpdateWidget(covariant TmarkView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.loadContent != widget.loadContent ||
+    if (oldWidget.getContent != widget.getContent ||
         oldWidget.value != widget.value) {
       _loadedContent.clear();
-      _cachedLoader = (src) => _loadContent(src);
+      _cachedLoader = _loadContent;
     }
   }
 

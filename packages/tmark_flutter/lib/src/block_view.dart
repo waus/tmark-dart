@@ -9,6 +9,7 @@ class _BlockView extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = _styleOf(context);
     return switch (value) {
+      tm.Caption caption => _CaptionView(caption: caption),
       tm.Paragraph(:final children) => _RichTextView(children: children),
       tm.Header(:final size, :final children) => Padding(
         padding: const EdgeInsets.only(top: 4),
@@ -63,25 +64,11 @@ class _BlockView extends StatelessWidget {
             if (caption != null) _CaptionView(caption: caption),
           ],
         ),
-      tm.ImageNode(:final src, :final caption, :final hasSpoiler) =>
-        _MediaBlock(
-          src: src,
-          kind: 'image',
-          caption: caption,
-          hasSpoiler: hasSpoiler,
-        ),
-      tm.VideoNode(:final src, :final caption, :final hasSpoiler) =>
-        _MediaBlock(
-          src: src,
-          kind: 'video',
-          caption: caption,
-          hasSpoiler: hasSpoiler,
-        ),
-      tm.AudioNode(:final src, :final caption) => _MediaBlock(
-        src: src,
-        kind: 'audio',
-        caption: caption,
-      ),
+      tm.ImageNode(:final caption) ||
+      tm.VideoNode(:final caption) ||
+      tm.AudioNode(
+        :final caption,
+      ) => _MediaBlock(node: value, caption: caption),
       tm.Slideshow(:final children, :final caption) => _SlideshowView(
         children: children,
         caption: caption,

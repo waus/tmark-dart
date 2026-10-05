@@ -3,23 +3,16 @@ part of tmark_flutter;
 const _mediaCornerRadius = 0.0;
 
 class _MediaBlock extends StatelessWidget {
-  const _MediaBlock({
-    required this.src,
-    required this.kind,
-    this.caption,
-    this.hasSpoiler = false,
-  });
+  const _MediaBlock({required this.node, this.caption});
 
-  final String src;
-  final String kind;
+  final Object node;
   final tm.Caption? caption;
-  final bool hasSpoiler;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      _MediaNodeView(src: src, kind: kind, hasSpoiler: hasSpoiler),
+      _mediaNodeView(node),
       if (caption != null) _CaptionView(caption: caption!),
     ],
   );
@@ -75,7 +68,7 @@ class _MediaGroupState extends State<_MediaGroup> {
       return false;
     }
     for (var i = 0; i < a.length; i++) {
-      if (_mediaSrc(a[i]) != _mediaSrc(b[i])) {
+      if (_mediaKey(a[i]) != _mediaKey(b[i])) {
         return false;
       }
     }
@@ -86,10 +79,7 @@ class _MediaGroupState extends State<_MediaGroup> {
     final loader = _loader;
     if (loader == null) return;
     for (var i = 0; i < widget.children.length; i++) {
-      final src = switch (widget.children[i]) {
-        tm.ImageNode(:final src) => src,
-        _ => null,
-      };
+      final src = _mediaRatioSrc(widget.children[i]);
       if (src == null) continue;
       _resolveImageRatio(i, src, loader);
     }
@@ -114,7 +104,7 @@ class _MediaGroupState extends State<_MediaGroup> {
       if (mounted &&
           _loader == loader &&
           index < widget.children.length &&
-          _mediaSrc(widget.children[index]) == src &&
+          _mediaRatioSrc(widget.children[index]) == src &&
           (_ratios[index] - ratio).abs() >= 0.001) {
         setState(() => _ratios[index] = ratio);
       }
@@ -157,7 +147,12 @@ class _MediaGroupState extends State<_MediaGroup> {
                           decoration: BoxDecoration(
                             color: _styleOf(context).surfaceVariantColor,
                           ),
-                          child: _MediaTile(child: widget.children[i]),
+                          child: SizedBox.expand(
+                            child: _galleryNodeView(
+                              context,
+                              widget.children[i],
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -172,70 +167,43 @@ class _MediaGroupState extends State<_MediaGroup> {
   }
 }
 
-class _MediaTile extends StatelessWidget {
-  const _MediaTile({required this.child});
+Widget _galleryNodeView(BuildContext context, tm.GalleryNode node) =>
+    switch (node) {
+      tm.ImageNode() => _mediaNodeView(node),
+      tm.VideoNode() => _customBlock(context, node) ?? _mediaNodeView(node),
+      _ => _renderBlock(context, node),
+    };
 
-  final tm.GalleryNode child;
-
-  @override
-  Widget build(BuildContext context) =>
-      SizedBox.expand(child: _GalleryNodeView(child: child));
-}
-
-class _GalleryNodeView extends StatelessWidget {
-  const _GalleryNodeView({required this.child});
-
-  final tm.GalleryNode child;
-
-  @override
-  Widget build(BuildContext context) => switch (child) {
-    tm.ImageNode(:final src, :final hasSpoiler) => _MediaNodeView(
-      src: src,
-      kind: 'image',
-      hasSpoiler: hasSpoiler,
-    ),
-    tm.VideoNode(:final src, :final hasSpoiler) => _MediaNodeView(
-      src: src,
-      kind: 'video',
-      hasSpoiler: hasSpoiler,
-    ),
-    _ => _renderBlock(context, child),
-  };
-}
-
-class _MediaNodeView extends StatelessWidget {
-  const _MediaNodeView({
-    required this.src,
-    required this.kind,
-    required this.hasSpoiler,
-  });
-
-  final String src;
-  final String kind;
-  final bool hasSpoiler;
-
-  @override
-  Widget build(BuildContext context) => _SpoilerMedia(
+Widget _mediaNodeView(Object node) => switch (node) {
+  tm.ImageNode(:final src, :final hasSpoiler) => _SpoilerMedia(
     enabled: hasSpoiler,
-    imageSrc: kind == 'image' ? src : null,
-    child: _ResolvedMediaContent(kind: kind, src: src),
-  );
-}
+    imageSrc: src,
+    child: _ResolvedImage(src: src),
+  ),
+  tm.VideoNode(:final src, :final preview, :final hasSpoiler) => _SpoilerMedia(
+    enabled: hasSpoiler,
+    child: _VideoMediaContent(src: src, preview: preview),
+  ),
+  tm.AudioNode(:final src) => TmarkMediaPlaceholder(
+    kind: 'audio',
+    src: src,
+    error: 'Audio is not supported',
+  ),
+  _ => const SizedBox.shrink(),
+};
 
-class _ResolvedMediaContent extends StatefulWidget {
-  const _ResolvedMediaContent({required this.kind, required this.src});
+class _ResolvedImage extends StatefulWidget {
+  const _ResolvedImage({required this.src});
 
-  final String kind;
   final String src;
 
   @override
-  State<_ResolvedMediaContent> createState() => _ResolvedMediaContentState();
+  State<_ResolvedImage> createState() => _ResolvedImageState();
 }
 
-class _ResolvedMediaContentState extends State<_ResolvedMediaContent> {
-  Future<TmarkResolvedContent?>? _content;
+class _ResolvedImageState extends State<_ResolvedImage> {
+  Future<Widget>? _content;
   TmarkContentLoader? _loader;
-  TmarkContentResolver? _resolver;
 
   @override
   void didChangeDependencies() {
@@ -244,100 +212,57 @@ class _ResolvedMediaContentState extends State<_ResolvedMediaContent> {
   }
 
   @override
-  void didUpdateWidget(covariant _ResolvedMediaContent oldWidget) {
+  void didUpdateWidget(covariant _ResolvedImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updateContent();
   }
 
   void _updateContent() {
     final loader = _contentLoaderOf(context);
-    final resolver = _contentResolverOf(context);
-    if (_content != null &&
-        _loader == loader &&
-        _resolver == resolver &&
-        widget.kind == _kind &&
-        widget.src == _src)
-      return;
+    if (_content != null && _loader == loader && widget.src == _src) return;
     _loader = loader;
-    _resolver = resolver;
-    _kind = widget.kind;
     _src = widget.src;
-    _content = _resolve(loader, resolver);
+    _content = _resolve(loader);
   }
 
-  String? _kind;
   String? _src;
 
-  Future<TmarkResolvedContent?> _resolve(
-    TmarkContentLoader loader,
-    TmarkContentResolver? resolver,
-  ) async {
+  Future<Widget> _resolve(TmarkContentLoader loader) async {
     final src = widget.src;
-    switch (widget.kind) {
-      case 'image':
-        final bytes = await _loadTmarkImage(src, loader);
-        return tm.detectTmarkImageFormat(bytes) == tm.TmarkImageFormat.lottie
-            ? TmarkLottieContent(bytes)
-            : TmarkImageContent(MemoryImage(bytes));
-      case 'audio':
-        final bytes = await _loadTmarkAudio(src, loader);
-        return resolver?.call('audio', src, bytes);
-      case 'video':
-        final bytes = await loader(src);
-        return resolver?.call('video', src, bytes);
-      default:
-        return const TmarkContentError('Unsupported media kind');
+    final bytes = await _loadTmarkImage(src, loader);
+    if (tm.detectTmarkImageFormat(bytes) == tm.TmarkImageFormat.lottie) {
+      return Lottie.memory(
+        bytes,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) =>
+            TmarkMediaPlaceholder(kind: 'image', src: src, error: '$error'),
+      );
     }
+    return Image.memory(
+      bytes,
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) =>
+          TmarkMediaPlaceholder(kind: 'image', src: src, error: '$error'),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<TmarkResolvedContent?>(
+    return FutureBuilder<Widget>(
       future: _content,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return TmarkMediaPlaceholder(
-            kind: widget.kind,
+            kind: 'image',
             src: widget.src,
             error: '${snapshot.error}',
           );
         }
         if (snapshot.connectionState != ConnectionState.done) {
-          return TmarkMediaPlaceholder(kind: widget.kind, src: widget.src);
+          return TmarkMediaPlaceholder(kind: 'image', src: widget.src);
         }
 
-        final content = snapshot.data;
-        return switch (content) {
-          TmarkImageContent(:final image) => Image(
-            image: image,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => TmarkMediaPlaceholder(
-              kind: widget.kind,
-              src: widget.src,
-              error: '$error',
-            ),
-          ),
-          TmarkLottieContent(:final bytes) => Lottie.memory(
-            bytes,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => TmarkMediaPlaceholder(
-              kind: widget.kind,
-              src: widget.src,
-              error: '$error',
-            ),
-          ),
-          TmarkWidgetContent(:final child) => child,
-          TmarkContentError(:final message) => TmarkMediaPlaceholder(
-            kind: widget.kind,
-            src: widget.src,
-            error: message,
-          ),
-          null => TmarkMediaPlaceholder(
-            kind: widget.kind,
-            src: widget.src,
-            error: 'Content is not available',
-          ),
-        };
+        return snapshot.data!;
       },
     );
   }
@@ -467,12 +392,17 @@ List<double> _defaultRatios(List<tm.GalleryNode> children) {
   ];
 }
 
-String _mediaSrc(tm.GalleryNode node) {
-  return switch (node) {
-    tm.ImageNode(:final src) || tm.VideoNode(:final src) => src,
-    _ => '',
-  };
-}
+(String, String, String)? _mediaKey(tm.GalleryNode node) => switch (node) {
+  tm.ImageNode(:final src) => ('image', src, ''),
+  tm.VideoNode(:final src, :final preview) => ('video', src, preview),
+  _ => null,
+};
+
+String? _mediaRatioSrc(tm.GalleryNode node) => switch (node) {
+  tm.ImageNode(:final src) => src,
+  tm.VideoNode(:final preview) when preview.isNotEmpty => preview,
+  _ => null,
+};
 
 class _GroupedMediaLayout {
   const _GroupedMediaLayout({
@@ -876,8 +806,13 @@ class _SlideshowViewState extends State<_SlideshowView> {
                         ? const PageScrollPhysics()
                         : const NeverScrollableScrollPhysics(),
                     onPageChanged: (page) => setState(() => _page = page),
-                    itemBuilder: (context, page) => _SlideshowItem(
-                      child: widget.children[_logicalIndex(page)],
+                    itemBuilder: (context, page) => SizedBox.expand(
+                      child: Center(
+                        child: _galleryNodeView(
+                          context,
+                          widget.children[_logicalIndex(page)],
+                        ),
+                      ),
                     ),
                   ),
                   if (canPage) ...[
@@ -924,17 +859,6 @@ class _SlideshowViewState extends State<_SlideshowView> {
       curve: Curves.easeOut,
     );
   }
-}
-
-class _SlideshowItem extends StatelessWidget {
-  const _SlideshowItem({required this.child});
-
-  final tm.GalleryNode child;
-
-  @override
-  Widget build(BuildContext context) => SizedBox.expand(
-    child: Center(child: _GalleryNodeView(child: child)),
-  );
 }
 
 class _SlideshowButton extends StatelessWidget {

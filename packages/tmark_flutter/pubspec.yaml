@@ -1,6 +1,6 @@
 name: tmark_flutter
 description: Basic Flutter widgets for rendering tmark nodes.
-version: 0.1.0
+version: 0.3.0
 repository: https://github.com/waus/tmark-dart/tree/main/packages/tmark_flutter
 issue_tracker: https://github.com/waus/tmark-dart/issues
 environment:
@@ -11,8 +11,7 @@ dependencies:
   timezone: ^0.11.0
   lottie: ^3.3.3
   http: ^1.6.0
-  tmark:
-    version: ^0.1.0
+  tmark: ^0.3.0
   url_launcher: ^6.3.2
 dev_dependencies:
   flutter_test:

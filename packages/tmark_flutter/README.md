@@ -29,32 +29,35 @@ Widget buildDocument() => SingleChildScrollView(
 `TmarkView` accepts a document or an individual node. It lays out document blocks
 in a column; provide scrolling in the surrounding application.
 
-Media bytes are loaded by `TmarkView`. Pass `loadContent` to handle another scheme, add authentication, or
-use a cache:
+`getContent` loads bytes for images and video previews. The default
+implementation uses HTTP(S). Replace it to handle another scheme:
 
 ```dart
 TmarkView(
   value: document,
-  loadContent: (src) async {
-    if (src.startsWith('app:')) return appStorage.readBytes(src);
+  getContent: (src) {
+    if (src.startsWith('app:')) {
+      return appStorage.readBytes(src);
+    }
     return defaultTmarkContentLoader(src);
   },
 )
 ```
 
-The loader returns `Future<Uint8List>`. The view checks image and audio bytes
-against the format allowlists in `tmark` before rendering them. Unsupported
-content appears as a media error. Inline images and gallery images use the same
-loader. Audio playback and video rendering require a `TmarkActions.getContent`
-callback; it receives `(tag, src, bytes)` after loading. Audio bytes are checked
-before this callback runs. Video has no format allowlist.
+The view caches image bytes and shares downloads when a source appears more
+than once. Audio has no built-in player. Video shows its `preview` image and a
+Play button that opens the video URL in an external application. Applications
+can supply audio and video players through `TmarkBlockRenderer`.
+The optional [`tmark_flutter_extra`](../tmark_flutter_extra) package
+provides independent audio, video, math, and code widgets. Register whichever
+you need with `TmarkBlockRenderer` or `TmarkInlineRenderer`.
 
 ## Customize rendering
 
 - `style`: override typography, colors, and decorations with `TmarkStyle`.
 - `spacing`: set spacing between document blocks.
-- `actions`: provide copying, date formatting, and audio/video presentation
-  through `TmarkActions`.
+- `actions`: provide copying and date formatting through `TmarkActions`.
+- `getContent`: configure image and video preview loading.
 - `renderers`: supply block and inline renderers through `TmarkRenderers`.
 - `codec`: use a registry containing your application types.
 

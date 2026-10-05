@@ -1,10 +1,6 @@
 # Flutter TODO
 ## Default Widgets
 
-- `math|math-block`: the default renderer does not support this. An extended version exists in the example, and later tmark-extended should be created and this should be moved there.
-- `pre.language`: the default renderer does not support highlighting. An extended version exists in the example, and later tmark-extended should be created and this should be moved there.
-- `video`: the default renderer does not support this. An extended version exists in the example, and later tmark-extended should be created and this should be moved there.
-- `audio`: the default renderer does not support this. An extended version exists in the example, and later tmark-extended should be created and this should be moved there.
 - `video` `has_spoiler`: the video spoiler does not extract previews/colors.
 
 ## Links, Anchors, References

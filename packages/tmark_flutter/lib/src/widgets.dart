@@ -62,7 +62,17 @@ class _TmarkIconButton extends StatelessWidget {
   }
 }
 
-enum _TmarkIcon { add, remove, back, forward, copy, map, pin, chevronRight }
+enum _TmarkIcon {
+  add,
+  remove,
+  back,
+  forward,
+  copy,
+  map,
+  pin,
+  chevronRight,
+  play,
+}
 
 class _TmarkIconPainter extends CustomPainter {
   const _TmarkIconPainter(this.icon, {required this.color});
@@ -118,6 +128,13 @@ class _TmarkIconPainter extends CustomPainter {
         canvas.drawPath(path, paint);
       case _TmarkIcon.copy:
         _paintCopy(canvas, size, paint);
+      case _TmarkIcon.play:
+        final path = Path()
+          ..moveTo(size.width * 0.32, size.height * 0.2)
+          ..lineTo(size.width * 0.78, center.dy)
+          ..lineTo(size.width * 0.32, size.height * 0.8)
+          ..close();
+        canvas.drawPath(path, paint..style = PaintingStyle.fill);
       case _TmarkIcon.map:
         final path = Path()
           ..moveTo(size.width * 0.16, size.height * 0.25)

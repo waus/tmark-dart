@@ -282,7 +282,7 @@ class _InlineImageState extends State<_InlineImage> {
                       text: widget.alternativeText,
                       style: widget.style,
                     )
-                    : SizedBox(height: height);
+                  : SizedBox(height: height);
             }
             if (tm.detectTmarkImageFormat(snapshot.data!) ==
                 tm.TmarkImageFormat.lottie) {

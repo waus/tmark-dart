@@ -46,9 +46,6 @@ TmarkActions _actionsOf(BuildContext context) =>
 TmarkDateTimeFormatter? _dateTimeFormatterOf(BuildContext context) =>
     _actionsOf(context).formatDateTime;
 
-TmarkContentResolver? _contentResolverOf(BuildContext context) =>
-    _actionsOf(context).getContent;
-
 TmarkContentLoader _contentLoaderOf(BuildContext context) =>
     _TmarkScope.of(context).loadContent;
 
@@ -60,22 +57,19 @@ Future<Uint8List> _loadTmarkImage(String src, TmarkContentLoader loader) async {
   return bytes;
 }
 
-Future<Uint8List> _loadTmarkAudio(String src, TmarkContentLoader loader) async {
-  final bytes = await loader(src);
-  if (tm.detectTmarkAudioFormat(bytes) == null) {
-    throw const FormatException('Unsupported audio format');
-  }
-  return bytes;
+Widget _renderBlock(BuildContext context, Object node) {
+  return _customBlock(context, node) ??
+      const TmarkRenderDefaults._().block(context, node);
 }
 
-Widget _renderBlock(BuildContext context, Object node) {
+Widget? _customBlock(BuildContext context, Object node) {
   final defaults = const TmarkRenderDefaults._();
   final renderers = _TmarkScope.of(context).renderers;
   for (final renderer in renderers.blocks) {
     final widget = renderer.tryRender(context, node, defaults);
     if (widget != null) return widget;
   }
-  return defaults.block(context, node);
+  return null;
 }
 
 String _fallbackFormatDateTime(BuildContext context, DateTime value) {

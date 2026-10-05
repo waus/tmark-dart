@@ -6,27 +6,30 @@ typedef TmarkCopyHandler =
 typedef TmarkDateTimeFormatter =
     String Function(BuildContext context, DateTime value);
 
-typedef TmarkContentResolver =
-    FutureOr<TmarkResolvedContent?> Function(
-      String tag,
-      String src,
-      Uint8List bytes,
-    );
-
-/// Loads the original bytes for a media source. Custom loaders may support any URI scheme.
+/// Loads content bytes. Custom loaders may support any URI scheme.
 typedef TmarkContentLoader = Future<Uint8List> Function(String src);
 
-/// Default loader for HTTP and HTTPS media sources.
-Future<Uint8List> defaultTmarkContentLoader(String src) async {
+/// Default HTTP and HTTPS content loader.
+Future<Uint8List> defaultTmarkContentLoader(
+  String src, {
+  http.Client? client,
+}) async {
   final uri = Uri.parse(src);
   if (uri.scheme != 'http' && uri.scheme != 'https') {
     throw UnsupportedError('Unsupported media URL scheme: ${uri.scheme}');
   }
-  final response = await http.get(uri).timeout(const Duration(seconds: 30));
-  if (response.statusCode < 200 || response.statusCode >= 300) {
-    throw StateError('HTTP ${response.statusCode}: $src');
+  final resolvedClient = client ?? http.Client();
+  try {
+    final response = await resolvedClient
+        .get(uri)
+        .timeout(const Duration(seconds: 30));
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw StateError('HTTP ${response.statusCode}: $src');
+    }
+    return response.bodyBytes;
+  } finally {
+    if (client == null) resolvedClient.close();
   }
-  return response.bodyBytes;
 }
 
 typedef TmarkBlockRender<T extends Object> =
@@ -40,39 +43,10 @@ typedef TmarkInlineRender<T extends Object> =
     );
 
 class TmarkActions {
-  const TmarkActions({this.onCopy, this.formatDateTime, this.getContent});
+  const TmarkActions({this.onCopy, this.formatDateTime});
 
   final TmarkCopyHandler? onCopy;
   final TmarkDateTimeFormatter? formatDateTime;
-  final TmarkContentResolver? getContent;
-}
-
-sealed class TmarkResolvedContent {
-  const TmarkResolvedContent();
-}
-
-class TmarkImageContent extends TmarkResolvedContent {
-  const TmarkImageContent(this.image);
-
-  final ImageProvider image;
-}
-
-class TmarkLottieContent extends TmarkResolvedContent {
-  const TmarkLottieContent(this.bytes);
-
-  final Uint8List bytes;
-}
-
-class TmarkWidgetContent extends TmarkResolvedContent {
-  const TmarkWidgetContent(this.child);
-
-  final Widget child;
-}
-
-class TmarkContentError extends TmarkResolvedContent {
-  const TmarkContentError(this.message);
-
-  final String message;
 }
 
 class TmarkBlockRenderer<T extends Object> {
@@ -114,6 +88,10 @@ class TmarkRenderers {
 
 class TmarkRenderDefaults {
   const TmarkRenderDefaults._();
+
+  /// The application's content loader, with TmarkView's per-source cache.
+  TmarkContentLoader contentLoader(BuildContext context) =>
+      _contentLoaderOf(context);
 
   Widget block(BuildContext context, Object node) {
     return _BlockView(value: node);
