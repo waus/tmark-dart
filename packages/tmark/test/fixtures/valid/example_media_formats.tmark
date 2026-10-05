@@ -11,8 +11,6 @@
 {img;#caption{AVIF}https://tmark.waus.app/static/media-formats/image.avif}
 {h;#s{3}PNG}
 {img;#caption{PNG}https://tmark.waus.app/static/media-formats/image.png}
-{h;#s{3}JPEG XL}
-{img;#caption{JPEG XL}https://tmark.waus.app/static/media-formats/image.jxl}
 {h;#s{3}Lottie JSON}
 {img;#caption{Lottie JSON}https://tmark.waus.app/static/media-formats/animation.json}
 {h;#s{3}MP3 / native MP3}
@@ -24,6 +22,8 @@
 {h;#s{3}AAC-LC / ISO BMFF (MP4)}
 {audio;#caption{AAC-LC / ISO BMFF (MP4)}https://tmark.waus.app/static/media-formats/tone-aac-lc.m4a}
 {h;#s{2}Unsupported}
+{h;#s{3}JPEG XL}
+{img;#caption{JPEG XL}https://tmark.waus.app/static/media-formats/image.jxl}
 {h;#s{3}GIF}
 {img;#caption{GIF}https://tmark.waus.app/static/media-formats/image.gif}
 {h;#s{3}BMP}

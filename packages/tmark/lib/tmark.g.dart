@@ -562,6 +562,18 @@ final $VideoNodeSchema = () {
     defaultValue: () => false,
   );
   final f2 = TmarkField<VideoNode, String>(
+    "preview",
+    FieldTypes.string,
+    (v) => v.preview,
+    defaultValue: () => '',
+  );
+  final f3 = TmarkField<VideoNode, bool>(
+    "loop",
+    FieldTypes.boolean,
+    (v) => v.loop,
+    defaultValue: () => false,
+  );
+  final f4 = TmarkField<VideoNode, String>(
     null,
     FieldTypes.string,
     (v) => v.src,
@@ -570,9 +582,14 @@ final $VideoNodeSchema = () {
   return NodeType<VideoNode>(
     "video",
     layout: TmarkLayout.compact,
-    fields: [f0, f1, f2],
-    create: (v) =>
-        VideoNode(src: v.get(f2), caption: v.get(f0), hasSpoiler: v.get(f1)),
+    fields: [f0, f1, f2, f3, f4],
+    create: (v) => VideoNode(
+      src: v.get(f4),
+      preview: v.get(f2),
+      loop: v.get(f3),
+      caption: v.get(f0),
+      hasSpoiler: v.get(f1),
+    ),
   );
 }();
 

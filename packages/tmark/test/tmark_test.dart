@@ -46,6 +46,12 @@ void main() {
       marshal(const ImageNode(src: '/file/x.jpg', hasSpoiler: true)),
       '{img;#has_spoiler{t}/file/x.jpg}',
     );
+    expect(
+      marshal(
+        const VideoNode(src: 'clip.mp4', preview: 'cover.jpg', loop: true),
+      ),
+      '{video;#preview{cover.jpg}#loop{t}clip.mp4}',
+    );
   });
 
   test('round trip', () {
@@ -61,6 +67,7 @@ void main() {
         hasSpoiler: true,
         caption: Caption(credit: [TText('credit')], text: [TText('caption')]),
       ),
+      const VideoNode(src: 'clip.mp4', preview: 'cover.jpg', loop: true),
       const DateTimeNode(unix: 1, timezone: 'UTC'),
       const Icon(src: '/file/x.png', alternativeText: 'x'),
       const ListBlock([

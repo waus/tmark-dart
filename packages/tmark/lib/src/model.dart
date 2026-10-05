@@ -320,10 +320,18 @@ final class ImageNode extends TmarkValue implements BlockNode, GalleryNode {
 
 @TmarkNode('video')
 final class VideoNode extends TmarkValue implements BlockNode, GalleryNode {
-  const VideoNode({this.src = '', this.caption, this.hasSpoiler = false});
+  const VideoNode({
+    this.src = '',
+    this.preview = '',
+    this.loop = false,
+    this.caption,
+    this.hasSpoiler = false,
+  });
   final Caption? caption;
   @TmarkName('has_spoiler')
   final bool hasSpoiler;
+  final String preview;
+  final bool loop;
   @TmarkBody()
   final String src;
 

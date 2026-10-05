@@ -1,7 +1,7 @@
 part of tmark;
 
 /// Media formats required by the tmark content policy.
-enum TmarkImageFormat { jpeg, webp, avif, png, jpegXl, lottie }
+enum TmarkImageFormat { jpeg, webp, avif, png, lottie }
 
 /// Audio codec and container combinations required by the content policy.
 enum TmarkAudioFormat { mp3, flac, oggOpus, mp4AacLc }
@@ -16,23 +16,6 @@ TmarkImageFormat? detectTmarkImageFormat(Uint8List bytes) {
     return TmarkImageFormat.webp;
   }
   if (_isAvif(bytes)) return TmarkImageFormat.avif;
-  if (_startsWith(bytes, [0xff, 0x0a]) ||
-      _startsWith(bytes, [
-        0,
-        0,
-        0,
-        12,
-        0x4a,
-        0x58,
-        0x4c,
-        0x20,
-        13,
-        10,
-        0x87,
-        10,
-      ])) {
-    return TmarkImageFormat.jpegXl;
-  }
   if (_isSelfContainedLottie(bytes)) return TmarkImageFormat.lottie;
   return null;
 }

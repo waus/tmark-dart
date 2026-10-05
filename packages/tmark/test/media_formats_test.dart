@@ -25,15 +25,12 @@ void main() {
       ),
       TmarkImageFormat.avif,
     );
-    expect(
-      detectTmarkImageFormat(_bytes([0xff, 0x0a])),
-      TmarkImageFormat.jpegXl,
-    );
+      expect(detectTmarkImageFormat(_bytes([0xff, 0x0a])), isNull);
     expect(
       detectTmarkImageFormat(
         _bytes([0, 0, 0, 12, ...'JXL '.codeUnits, 13, 10, 0x87, 10]),
       ),
-      TmarkImageFormat.jpegXl,
+      isNull,
     );
     expect(detectTmarkImageFormat(_bytes('GIF89a'.codeUnits)), isNull);
     const lottie =
