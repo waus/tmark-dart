@@ -13,10 +13,34 @@ Widget _host(Widget child) => MaterialApp(
 
 final _pixel = base64Decode(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJ'
-  'AAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==',
+  'AAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==',
 );
 
 void main() {
+  testWidgets('small images keep their natural size in a wide block', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _host(
+        SizedBox(
+          width: 300,
+          child: TmarkView(
+            value: const tm.ImageNode(src: 'app:image'),
+            getContent: (_) async => _pixel,
+          ),
+        ),
+      ),
+    );
+    await tester.runAsync(
+      () => precacheImage(
+        MemoryImage(_pixel),
+        tester.element(find.byType(TmarkView)),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(Image)), const Size(1, 1));
+  });
+
   testWidgets('audio is unsupported without fetching its source', (
     tester,
   ) async {

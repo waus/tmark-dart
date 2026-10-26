@@ -238,11 +238,14 @@ class _ResolvedImageState extends State<_ResolvedImage> {
             TmarkMediaPlaceholder(kind: 'image', src: src, error: '$error'),
       );
     }
-    return Image.memory(
-      bytes,
-      fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) =>
-          TmarkMediaPlaceholder(kind: 'image', src: src, error: '$error'),
+    return Align(
+      heightFactor: 1,
+      child: Image.memory(
+        bytes,
+        fit: BoxFit.scaleDown,
+        errorBuilder: (context, error, stackTrace) =>
+            TmarkMediaPlaceholder(kind: 'image', src: src, error: '$error'),
+      ),
     );
   }
 

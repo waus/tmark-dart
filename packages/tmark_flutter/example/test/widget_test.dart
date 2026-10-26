@@ -11,7 +11,7 @@ import 'package:tmark_flutter/tmark_flutter.dart';
 void main() {
   test('loads all named examples from the shared URL prefix', () async {
     final requested = <Uri>[];
-    final source = tm.marshal(const tm.Document(title: 'Пример', content: []));
+    final source = tm.marshal(const tm.Document(title: 'Example', content: []));
     final client = MockClient((request) async {
       requested.add(request.url);
       return http.Response.bytes(
@@ -25,7 +25,7 @@ void main() {
     final examples = await loadExamples(client: client);
 
     expect(examples, hasLength(12));
-    expect(examples.map((document) => document.title), everyElement('Пример'));
+    expect(examples.map((document) => document.title), everyElement('Example'));
     expect(requested.map((url) => url.toString()), [
       for (final name in exampleFiles) '$exampleBaseUrl$name',
     ]);

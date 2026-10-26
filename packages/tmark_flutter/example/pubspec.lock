@@ -603,21 +603,21 @@ packages:
       path: "../../tmark"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.3.0"
   tmark_flutter:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.3.0"
   tmark_flutter_extra:
     dependency: "direct main"
     description:
       path: "../../tmark_flutter_extra"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.3.0"
   tuple:
     dependency: transitive
     description:
