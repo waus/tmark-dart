@@ -349,12 +349,15 @@ class _DateTimeText extends StatelessWidget {
       isUtc: true,
     );
     final local = instant.toLocal();
-    final source = _dateTimeInTimezone(instant, timezone);
+    final zone = timezone.isEmpty ? 'UTC' : timezone;
+    final source = _dateTimeInTimezone(instant, zone);
 
     final formattedLocal = _formatDateTime(context, local);
-    final formattedSource = _formatDateTime(context, source);
+    final formattedSource = source == null
+        ? '$unix ($zone)'
+        : '${_formatDateTime(context, source)} $zone';
     return Semantics(
-      label: '$formattedLocal. $formattedSource $timezone',
+      label: '$formattedLocal. $formattedSource',
       child: Text(formattedLocal, style: style),
     );
   }
@@ -362,7 +365,36 @@ class _DateTimeText extends StatelessWidget {
 
 var _timeZonesInitialized = false;
 
-DateTime _dateTimeInTimezone(DateTime instant, String timezone) {
+DateTime? _dateTimeInTimezone(DateTime instant, String timezone) {
+  if (['UTC', 'GMT', 'Z'].contains(timezone)) return instant.toUtc();
+  final fixed = RegExp(
+    r'^(?:([+-])([0-9]{2}):([0-9]{2})|UTC([+-])([0-9]{1,2})(?::([0-9]{2}))?)$',
+  ).firstMatch(timezone);
+  if (fixed != null && fixed.end == timezone.length) {
+    final sign = fixed.group(1) ?? fixed.group(4)!;
+    final hours = int.parse(fixed.group(2) ?? fixed.group(5)!);
+    final minutes = int.parse(fixed.group(3) ?? fixed.group(6) ?? '0');
+    if (hours > 23 || minutes > 59) return null;
+    final offset = (hours * 60 + minutes) * (sign == '-' ? -1 : 1);
+    return tz.TZDateTime.from(
+      instant,
+      tz.Location(timezone, [0], [0], [
+        tz.TimeZone(
+          Duration(minutes: offset),
+          isDst: false,
+          abbreviation: timezone,
+        ),
+      ]),
+    );
+  }
+  if (['Local', 'localtime', 'posixrules'].contains(timezone) ||
+      timezone.startsWith('posix/') ||
+      timezone.startsWith('right/') ||
+      timezone.startsWith('UTC+') ||
+      timezone.startsWith('UTC-') ||
+      timezone.startsWith('GMT+') ||
+      timezone.startsWith('GMT-'))
+    return null;
   if (!_timeZonesInitialized) {
     tzdata.initializeTimeZones();
     _timeZonesInitialized = true;
@@ -370,8 +402,8 @@ DateTime _dateTimeInTimezone(DateTime instant, String timezone) {
 
   try {
     return tz.TZDateTime.from(instant, tz.getLocation(timezone));
-  } on Object {
-    return instant.toUtc();
+  } on tz.LocationNotFoundException {
+    return null;
   }
 }
 
